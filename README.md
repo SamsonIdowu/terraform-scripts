@@ -1,11 +1,17 @@
-# terraform-scripts
-This repository hosts terraform scripts for different purposes
+# 🌍 terraform-scripts  
+This repository hosts a collection of **Terraform scripts** designed to automate and simplify different infrastructure use cases. ⚡  
 
-## Prerequisites
-Run the following commands on powershell or CMD in admin mode:
+---
+
+## 🧰 Prerequisites  
+Run the following commands on **PowerShell or CMD (Admin mode)**:
+
+---
+
+### ☁️ Install AWS CLI  
 
 ### Install AWS CLI
-1. Install AWS CLI v2 using `winget` utility:
+1. Install AWS CLI v2 using `winget`:
 ```
 winget install Amazon.AWSCLI
 ```
@@ -24,14 +30,23 @@ AWS Secret Access Key [None]: <YOUR_SECRET_KEY>
 Default region name [None]: us-east-1  # (or your preferred region)
 Default output format [None]: json
 ```
-The credentials are saved into: `C:\Users\<USER_ACCOUNT>\.aws\credentials` and `C:\Users\<USER_ACCOUNT>\.aws\config`
+
+📁 Credentials will be saved in:  
+- `C:\Users\<USER_ACCOUNT>\.aws\credentials`  
+- `C:\Users\<USER_ACCOUNT>\.aws\config`  
+
+5. Verify your configuration:  
 5. Verify your AWS configuration:
 ```
 aws sts get-caller-identity
 ```
 
-### Install Terraform
-1. Install terrfaorm using `winget` utility:
+
+---
+
+### 🏗️ Install Terraform  
+
+1. Install Terraform using `winget`:  
 ```
 winget install HashiCorp.Terraform
 ```
@@ -40,7 +55,7 @@ winget install HashiCorp.Terraform
 terraform --version
 ```
 
-## Usage
+## 🚀 Usage  
 
 - Clone the repository to your local machine using:
 ```
@@ -67,3 +82,12 @@ terraform apply --auto-configure
 ```
 terraform destroy --auto-configure
 ```
+
+
+---
+
+## ⚠️ Notes  
+
+- 🔐 Always keep your AWS credentials secure — never commit them to Git.  
+- 🧪 Review your `terraform plan` output carefully before applying changes.  
+- 💡 Customize scripts based on your infrastructure needs for better control and efficiency.  
