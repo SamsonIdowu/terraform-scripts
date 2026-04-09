@@ -2,6 +2,24 @@ provider "aws" {
   region = var.region
 }
 
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.40"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.2"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.8"
+    }
+  }
+  required_version = ">= 1.5"
+}
+
 # -------------------------
 # Generate SSH Key Pair
 # -------------------------
@@ -26,6 +44,8 @@ resource "aws_key_pair" "generated_key" {
 # -------------------------
 resource "aws_vpc" "content-team-vpc" {
   cidr_block = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true 
 
   tags = {
     Name = "content-team-vpc"
@@ -66,13 +86,13 @@ resource "aws_route_table_association" "assoc" {
 # -------------------------
 resource "aws_security_group" "secure_sg" {
   name        = "secure-sg"
-  description = "Allow SSH on 2200 and HTTPS only"
+  description = "Allow SSH on 22 and HTTPS only"
   vpc_id      = aws_vpc.content-team-vpc.id
 
-  # SSH on custom port 2200
+  # ✅ Standard SSH port
   ingress {
-    description = "SSH custom port"
-    from_port   = 2200
+    description = "SSH access"
+    from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
@@ -110,25 +130,15 @@ resource "aws_security_group" "secure_sg" {
 # -------------------------
 resource "aws_instance" "ec2_instances" {
   count = length(var.instance_configs)
-
   ami           = var.instance_configs[count.index].ami
   instance_type = var.instance_configs[count.index].instance_type
-
   subnet_id              = aws_subnet.shared_subnet.id
   vpc_security_group_ids = [aws_security_group.secure_sg.id]
   key_name               = aws_key_pair.generated_key.key_name
-
   associate_public_ip_address = true
 
   tags = {
     Name = var.instance_configs[count.index].name
   }
 
-  # Change SSH port to 2200
-  #user_data = <<-EOF
-  #            #!/bin/bash
-  #            sed -i 's/^#Port 22/Port 2200/' /etc/ssh/sshd_config
-  #            sed -i 's/^Port 22/Port 2200/' /etc/ssh/sshd_config
-  #            systemctl restart sshd || systemctl restart ssh
-  #            EOF
 }
